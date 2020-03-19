@@ -1,6 +1,6 @@
 # Autu_api
 接口自动化测试
-！[登录页]（https://github.com/13011192573/Autu_api/blob/master/WechatIMG84.png),
+![登录页]（https://github.com/13011192573/Autu_api/blob/master/WechatIMG84.png),
 
 ！[首页]（https://github.com/13011192573/Autu_api/blob/master/WechatIMG85.png),
 
