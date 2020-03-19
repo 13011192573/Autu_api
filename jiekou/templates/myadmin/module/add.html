@@ -1,0 +1,76 @@
+{% extends "myadmin/base.html" %}
+
+
+{% block mainbody %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        模块管理
+        <small>模块</small>
+      </h1>
+      <ol class="breadcrumb">
+<!--        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>-->
+<!--        <li class="active">店铺管理</li>-->
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content container-fluid" >
+
+      <div class="row" >
+        <div class="col-xs-12">
+          <div class="box" style="">
+            <div class="box-header">
+                <h2 class="box-title"> <span class="glyphicon glyphicon-calendar" aria-hidden="true">模块添加</h2>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" action="{% url 'myadmin_module_insert' %}" method="post" enctype="multipart/form-data" name="myform" onsubmit="return doSubmit()">
+
+
+              {% csrf_token %}
+              <div class="box-body" align="center" style="background: rgba(255, 90, 77, 0.26)">
+               <div class="control-group">
+                <label class="control-label" for="input01">请输入模块名</label>
+                <div class="controls" >
+                    <input type="text" name="modulename" class="input-xlarge" id="input01" value=""  width="60%"/>
+                </div>
+            </div>
+
+               <label style="margin-top: 30px"> &nbsp;  请选择所属项目：</label>
+                  <select name="describe" class="span2">
+                      {% for vo in plist %}
+        <option value="{{ vo.name }}" >{{vo.name}}</option>
+                    {% endfor %}
+
+                  </select>
+
+
+
+
+            <div class="form-actions" style="margin-top: 20px" >
+                <button type="submit" class="btn btn-primary">添加</button>
+                <button style="margin-left: 5px" type="reset" class="btn">重置</button>
+            </div>
+            </form>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+    </section>
+    <!-- /.content -->
+<script>
+  function doSubmit() {
+    var modulename = document.myform.modulename.value;
+
+
+
+    if(modulename === "") {
+      window.alert("模块名不能为空")
+      return false;
+    }
+
+  }
+</script>
+{% endblock %}

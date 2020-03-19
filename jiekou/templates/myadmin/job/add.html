@@ -1,0 +1,271 @@
+{% extends "myadmin/base.html" %}
+
+
+{% block mainbody %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        用例管理
+        <small>case</small>
+      </h1>
+      <ol class="breadcrumb">
+<!--        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>-->
+<!--        <li class="active">店铺管理</li>-->
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content container-fluid" >
+
+      <div class="row" >
+        <div class="col-xs-12">
+          <div class="box" style="">
+            <div class="box-header">
+                <h2 class="box-title"> <span class="glyphicon glyphicon-calendar" aria-hidden="true">用例编辑</h2>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+
+
+
+             <div class="box-body" align="center" style="background: rgba(255, 90, 77, 0.26)">
+                <div class="input-group" style="top:10px">
+                <span class="input-group-addon">用例名称</span>
+                <input id="case_name" type="text" value="{{ clist.case_name }}" class="form-control">
+              </div>
+                  <br>
+                   <label style="margin-top: 30px"> &nbsp;  请选择所属项目：</label>
+                  <select id= "pro_name" name="pro_name" class="span2">
+                      {% for vo in plist %}
+        <option value="{{ vo.name }}" {% if clist.pro_name == vo.name %}selected{% endif %}>>{{vo.name}}</option>
+                    {% endfor %}
+
+                  </select>
+
+                  <br>
+                   <label style="margin-top: 30px"> &nbsp;  请选择所属模块：</label>
+                 <select id= "model_name" name="model_name" class="span2">
+                      {% for vo in mlist %}
+        <option value="{{ vo.name }}" {% if clist.module_name == vo.name %}selected{% endif %}>{{vo.name}}</option>
+                    {% endfor %}
+
+                  </select>
+
+
+
+            <br><br>
+
+            <div class="input-group">
+                <span class="input-group-addon">URL</span>
+                <input id="req_url" type="text" class="form-control" value="{{ clist.case_name }}">
+            </div>
+
+              <div>
+                <label>请求方法：</label>
+                <label class="radio-inline">
+                    <input type="radio" name="req_method" id="get" value="get" checked> GET
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="req_method" id="post" value="post"> POST
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="req_method" id="put" value="put"> PUT
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="req_method" id="delete" value="delete"> DELETE
+                </label>
+            </div>
+
+                <div class="input-group">
+                <span class="input-group-addon">header</span>
+                <input id="header" type="text" class="form-control" value="{}">
+            </div>
+
+              <div style="margin-top: 10px;">
+                <label>* 参数类型：</label>
+                <label class="radio-inline">
+                    <input type="radio" name="par_type" id="form" value="form" checked> form-data
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="par_type" id="json" value="json"> JSON
+                </label>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-addon">参数</span>
+                <input value="{}" id="parameter" type="text" class="form-control">
+            </div>
+            <p style="color:#8B8989">说明：以字典的方式设置参数，如：{"id":1, "name":"名称"}</p>
+
+             {% csrf_token %}
+            <div style="float: right;margin-right: 10px;">
+                <button type="button" class="btn btn-primary" onclick="sendFun()">预执行</button>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <p>返回结果：</p>
+                <textarea id="result" class="form-control" rows="10" name=textarea></textarea>
+            </div>
+
+            <div style="float: right;margin-right: 10px; margin-top: 15px">
+                <button type="button" class="btn btn-primary" onclick="assertFun()">断言</button>
+            </div>
+            <div style="margin-top: 25px">
+                <label>* 断言类型：</label>
+                <label class="radio-inline">
+                    <input type="radio" name="assert_type" id="contains" value="contains" checked> 包含
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="assert_type" id="mathches" value="mathches"> 匹配
+                </label>
+            </div>
+            <div style="margin-top: 10px;">
+                <p>断言：</p>
+                <textarea id="assert" class="form-control" rows="5" name=textarea>{{ clist.assert_text }}</textarea>
+            </div>
+
+            <div class="input-group" style="margin-top: 20px">
+                <span class="input-group-addon">运行频率(分钟／次）</span>
+                <input value="" id="run_time" type="text" class="form-control">
+            </div>
+
+             <div style="float: right; margin-top: 20px;">
+                <button type="button" class="btn btn-primary" onclick="saveFun()">保存</button>
+            </div>
+
+
+
+
+            </form>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+    </section>
+    <!-- /.content -->
+<!--<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>-->
+<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet"/>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>-->
+
+<script type="text/javascript">
+
+
+
+
+    //发送方法
+    function sendFun() {
+        var url = $("#req_url").val();
+
+        var method = $('input[name="req_method"]:checked').val();
+
+        var header = $("#header").val();
+        var type = $('input[name="par_type"]:checked').val();
+
+        var parameter = $("#parameter").val();
+
+        if (url === "") {
+            window.alert("URL不能为空！");
+            return;
+        }
+        window.alert("已发送请求！");
+        $.post("/myadmin/case/debug/", {
+                    url: url,
+                    method: method,
+                    header: header,
+                    type: type,
+                    parameter: parameter,
+
+
+                },
+                function (resp) {
+                    document.querySelector("#result").value = resp.result;
+                });
+    }
+
+    //断言方法
+    function assertFun() {
+        var assert_type = $('input[name="assert_type"]:checked').val();
+        var result_text = $("#result").val();
+        var assert_text = $("#assert").val();
+        console.log("断言的类型额", assert_type);
+        console.log("得到的结果", result_text);
+        console.log("断言的结果", assert_text);
+        if (result_text === "" || assert_text === "") {
+            window.alert("要断言的文本不能为空");
+            return;
+        }
+        $.post("/myadmin/case/assert_case/", {
+                    result: result_text,
+                    assert: assert_text,
+                    assert_type: assert_type
+                },
+                function (data) {
+                    alert("提示：" + data.result);
+                    console.log("返回的结果", data.result);
+                });
+    }
+
+    // 保存用例
+    function saveFun() {
+        //接口的基本数据
+        var url = $("#req_url").val();
+        var method = $('input[name="req_method"]:checked').val();
+        var header = $("#header").val();
+        var parameter_type = $('input[name="par_type"]:checked').val();
+        var parameter_body = $("#parameter").val();
+        // 断言的数据
+        var assert_type = $('input[name="assert_type"]:checked').val();
+        var assert_text = $("#assert").val();
+        // 保存的数据
+        var module_name = $("#model_name option:selected").val();
+        //window.alert(module_name)
+        var pro_name = $("#pro_name option:selected").val();
+        var case_name = $("#case_name").val();
+        var run_time = $("#run_time").val();
+
+        if (url === "") {
+            window.alert("URL不能为空！");
+            return;
+        }else if (assert_type == "" || assert_text === ""){
+            window.alert("断言的类型或参数不能为空！");
+            return;
+        }else if (run_time ===""){
+            window.alert("运行频率不能为空");
+            return;
+        }
+        else if(case_name == ""){
+            window.alert("用例名称不能为空！");
+            return;
+        } else if (module_name == "") {
+            window.alert("所属模块不能为空！");
+            return;
+        } else if(pro_name == ""){
+            window.alert("所属项目不能为空");
+            return;
+        }
+        //window.alert("parameter:" + parameter);
+        $.post("/myadmin/case/update_case/", {
+            url: url,
+            method: method,
+            header: header,
+            par_type: parameter_type,
+            par_body: parameter_body,
+            ass_type: assert_type,
+            ass_text: assert_text,
+            mid: module_name,
+            pro_name:pro_name,
+            name: case_name,
+            status: 2,
+            run_time:run_time
+
+        }, function (data) {
+            console.log("返回的结果", data);
+            window.alert("保存成功");
+            window.location.href = "{% url 'myadmin_case_index' 1%}";
+        });
+    }
+
+</script>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends "myadmin/base.html" %}
+
+
+{% block mainbody %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header" >
+      <h1>
+        用例管理
+        <small>用例列表</small>
+      </h1>
+      <ol class="breadcrumb">
+
+
+
+      </ol>
+
+
+    <!--    检索功能开始-->
+<!--      <form class="content-header" action="{% url 'myadmin_case_index' 1%}" method="get" style="margin-top: 20px; background: rgba(241, 82, 116, 0.26) ">-->
+<!--  <label>关键字：</label>-->
+<!--  <input type="text" name="casekeyword" value="{{request.GET.casekeyword}}" class="input-small" placeholder="用例名">-->
+<!--  <label>关键字：</label>-->
+<!--  <input type="text" name="userkeyword" value="{{request.GET.userkeyword}}" class="input-small" placeholder="创建者">-->
+
+<!--  <label> &nbsp; 所属项目：</label>-->
+<!--  <select name="proname" class="span1">-->
+<!--      {% for vo in clist %}-->
+
+<!--      <option value="{{ vo.pro_name }}" {% if request.GET.proname == '{{ vo.pro_name }}' %}selected{% endif %}>{{ vo.pro_name }}</option>-->
+<!--      {% endfor %}-->
+
+<!--  </select>-->
+
+<!--     <label> 所属模块：</label>-->
+<!--  <select name="module_name" class="span1">-->
+<!--      {% for vo in clist %}-->
+<!--       <option value="{{ vo.module_name }}" {% if request.GET.module_name == '{{ vo.module_name }}' %}selected{% endif %}>{{ vo.module_name }}</option>-->
+<!--      {% endfor %}-->
+
+<!--  </select>-->
+<!--  <button type="submit" class="btn" style="margin-left: 40px;margin-right: 40px">搜索</button>-->
+<!--  <a href="{% url 'myadmin_case_index' 1%}" class="btn">全部</a>-->
+<!--</form>-->
+
+    <!--    检索功能结束-->
+ </section>
+
+
+    <!-- Main content -->
+    <section class="content container-fluid">
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title"><i class="fa fa-calendar"></i> 用例信息</h3>
+
+              <div class="box-tools">
+                <div class="input-group input-group-sm" style="width: 70px;">
+<!--                  <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">-->
+
+                  <div class="input-group-btn">
+                            <a href="{% url 'myadmin_case_add' %}" class="btn btn-success btn-xs">
+             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>添加用例</a>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-hover">
+               <tr>
+
+                                    <th>用例名</th>
+                                    <th>URL</th>
+                                    <th>Method</th>
+                                    <th>创建者</th>
+                                    <th>所属项目</th>
+                                    <th>所属模块</th>
+                                    <th>创建时间</th>
+
+                                    <th>操作</th>
+
+
+							</tr>
+               		    {% for vo in clist %}
+
+							<tr>
+
+								<td>{{vo.case_name}}</td>
+								<td>{{vo.url}}</td>
+                                <td>{% if vo.method == 1 %}get{% elif  vo.method == 2 %}post{% elif  vo.method == 3 %}put{% else %}delete{% endif %}</td>
+                                <td>{{vo.create_person}}</td>
+                                <td>{{vo.pro_name}}</td>
+                                <td>{{vo.module_name}}</td>
+
+                                <td>{{vo.create_time}}</td>
+
+
+								<td width="30%">
+
+									  <a href="{% url 'myadmin_case_edit' vo.id%}" class="btn btn-success btn-xs">
+									  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 编辑</a>
+
+                                      {% if vo.stop_status == 0%}
+                                       <button type="button" onclick="start_run('{% url 'myadmin_case_run' vo.id%}')" class="btn btn-success btn-xs">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 启动</button>
+
+                                      {% endif %}
+
+                                      {% if vo.stop_status == 1%}
+                                      <button type="button" onclick="stop_run('{% url 'myadmin_stop_case' vo.id%}')" class="label label-info">
+									  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 暂停</button>
+                                      {% endif %}
+
+
+
+									  <button type="button" onclick="doDelete('{% url 'myadmin_case_del' vo.id%}')" class="btn btn-danger btn-xs"><input id="cid" type="hidden" class="form-control" value="{{ clist.id }}" >
+
+									  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 删除</button>
+
+
+
+                                </td>
+
+
+
+							</tr>
+                  <script>
+    function start_run(url){
+
+        var status = 0;
+
+        $.post("/myadmin/case/run/{{ vo.id }}", {
+                    status: status
+
+                },
+                );
+        Modal.confirm({
+        msg: "是否确定开始运行？",
+        title: ' 信息提示',
+        btnok: '确定',
+        btncl:'取消'
+      }).on(function (e){
+        if(e){
+          window.location=url
+            location.reload()
+
+
+        }
+      });
+  }
+
+  function stop_run(url){
+        var status = 1;
+        $.post("/myadmin/case/run/{{ vo.id }}", {
+                    status: status
+
+                },
+                );
+
+
+    Modal.confirm({
+        msg: "是否确定停止运行？",
+        title: ' 信息提示',
+        btnok: '确定',
+        btncl:'取消'
+      }).on(function (e){
+        if(e){
+          window.location=url
+            location.reload()
+
+
+        }
+      });
+  }
+
+
+
+</script>
+                        {% endfor %}
+              </table>
+            </div>
+      <div class="box-footer clearfix">
+
+
+
+           <ul class="pagination pagination-sm no-margin pull-right">
+        <li>
+            <a href="{% url 'myadmin_case_index' pIndex|add:-1 %}?{{ mywhere|join:'&' }}">&laquo;</a>
+        </li>
+        {% for p in plist %}
+        <li {% if pIndex == p %}class="active"{% endif %}>
+            <a href="{% url 'myadmin_case_index' p %}?{{ mywhere|join:'&' }}">{{p}}</a>
+        </li>
+        {% endfor %}
+        <li>
+            <a href="{% url 'myadmin_case_index' pIndex|add:1 %}?{{ mywhere|join:'&' }}">&raquo;</a>
+        </li>
+
+    </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+    </section>
+
+
+
+
+
+
+
+{% endblock %}

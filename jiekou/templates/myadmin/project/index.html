@@ -1,0 +1,97 @@
+
+{% extends "myadmin/base.html" %}
+
+
+{% block mainbody %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        项目管理
+        <small>项目列表</small>
+      </h1>
+      <ol class="breadcrumb">
+
+
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content container-fluid">
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title"><i class="fa fa-calendar"></i> 项目信息</h3>
+
+              <div class="box-tools">
+                <div class="input-group input-group-sm" style="width: 70px;">
+
+
+
+
+                  <div class="input-group-btn">
+                  <a href="{% url 'myadmin_project_add' %}" class="btn btn-success btn-xs">
+              <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 添加项目</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-hover">
+               <tr>
+
+                                    <th>项目名称</th>
+                                    <th>描述</th>
+                                    <th>操作</th>
+							</tr>
+               		    {% for vo in prolist %}
+
+							<tr>
+
+								<td>{{vo.name}}</td>
+								<td>{{vo.describe}}</td>
+
+								<td width="30%">
+
+									  <a href="{% url 'myadmin_project_edit' vo.id %}" class="btn btn-success btn-xs">
+									  <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 编辑</a>
+
+									  <button type="button" onclick="doDelete('{% url 'myadmin_project_del' vo.id%}')" class="btn btn-danger btn-xs">
+
+									  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 删除</button>
+
+
+                                </td>
+
+
+
+							</tr>
+                        {% endfor %}
+              </table>
+            </div>
+      <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+
+        {% for p in plist %}
+        <li {% if pIndex == p %}class="active"{% endif %}>
+            <a href="{% url 'myadmin_project_index' p %}">{{p}}</a>
+        </li>
+        {% endfor %}
+
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+    </section>
+
+
+
+
+
+
+{% endblock %}

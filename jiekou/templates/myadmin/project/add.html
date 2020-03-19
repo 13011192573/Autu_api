@@ -1,0 +1,80 @@
+{% extends "myadmin/base.html" %}
+
+
+{% block mainbody %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        项目管理
+        <small>项目添加</small>
+      </h1>
+      <ol class="breadcrumb">
+<!--        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>-->
+<!--        <li class="active">店铺管理</li>-->
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content container-fluid" >
+
+      <div class="row" >
+        <div class="col-xs-12">
+          <div class="box" style="">
+            <div class="box-header">
+                <h2 class="box-title"> <span class="glyphicon glyphicon-calendar" aria-hidden="true"> 项目添加</h2>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" action="{% url 'myadmin_project_insert' %}" method="post" name="myform" onsubmit="return doSubmit()" >
+
+<!--                <form action="{% url 'myadmin_doregister' %}" method="post" name="myform" onsubmit="return doSubmit()">-->
+
+              {% csrf_token %}
+              <div class="box-body" align="center" style="background: rgba(255, 90, 77, 0.26)">
+               <div class="control-group">
+                <label class="control-label" for="input01">项目名称</label>
+                <div class="controls" >
+                    <input type="text" name="name" class="input-xlarge" id="input01" value=""  width="60%"/>
+
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="input01">项目描述</label>
+                <div class="controls">
+                    <input type="text" name="describe" class="input-xlarge" id="input01"/>
+                </div>
+            </div>
+
+
+            <div class="form-actions" style="margin-top: 20px" >
+                <button type="submit" class="btn btn-primary">添加</button>
+                <button style="margin-left: 5px" type="reset" class="btn">重置</button>
+            </div>
+            </form>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+    </section>
+    <!-- /.content -->
+<script>
+  function doSubmit() {
+    var name = document.myform.name.value;
+
+
+
+    if(name === "") {
+      window.alert("项目名不能为空")
+      return false;
+    }
+
+    var describe =document.myform.describe.value;
+    if (describe === ""){
+      alert("项目描述不能为空")
+      return false;
+    }
+    return true;
+  }
+</script>
+{% endblock %}
